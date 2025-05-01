@@ -1,5 +1,6 @@
 from queue import PriorityQueue 
 from collections import defaultdict
+import os
 
 
 """
@@ -28,18 +29,23 @@ def prims_algorithm(adj_list):
     ## check every edge
     while not q.empty():
         popped_node = q.get()
+        edge_id = popped_node[3]
+        start_node = popped_node[1]
+        end_node = popped_node[2]
+        edge_length = popped_node[0]
         ## process it if it has not been visited yet
-        if popped_node[1] not in visited:
+        if popped_node[2] not in visited:
+            write_file("output.txt", f"{edge_id} {start_node} {end_node} {edge_length}")
             ## mark as visited
-            visited.add(popped_node[1])
+            visited.add(end_node)
             ## add the minimum edge to the edge set
-            edge_set.add(popped_node[2])
+            edge_set.add(edge_id)
             ## calculate the edge sum
-            edge_sum += popped_node[0]
+            edge_sum += edge_length
 
             ## Check the neighbors of the node we are processing and add its edges to the priority queue
-            for neighbor in adj_list[popped_node[1]]:
-                if neighbor[1] not in visited:
+            for neighbor in adj_list[end_node]:
+                if neighbor[2] not in visited:
                     q.put(neighbor)
 
     return edge_set, edge_sum
@@ -53,14 +59,14 @@ Args:
 
 Returns:
     adjacency list of graph which contains the node as the key, and a list of
-    [edge, end node, edge_id] or [edge, start node, edge_id] to account for an 
+    [edge, start node, end node, edge_id] or [edge, end node, start node, edge_id] to account for an 
     undirected graph.
 """
 def read_file(file_name):
     ## keep edge representation in the form of a list of lists so it is easier for us to process
     edge_representation = []
     ## open the file and process each line
-    with open("/content/cal.cedge.txt", "r") as file:
+    with open("cal.cedge.txt", "r") as file:
         for line in file:
             # skip comments and blank lines
             if line.startswith("#") or not line.strip():
@@ -79,9 +85,24 @@ def read_file(file_name):
         end = line[2]
         edge = line[3]
         edge_id = line[0]
-        adj_list[start].append((edge, end, edge_id)) 
-        adj_list[end].append((edge, start, edge_id)) 
+        adj_list[start].append((edge, start, end, edge_id)) 
+        adj_list[end].append((edge, end, start, edge_id)) 
 
     return adj_list
 
-## test
+def write_file(file_name,text):
+    # Writing to a file
+    try:
+        with open(file_name, "a") as file:
+            file.write(text + "\n")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+def main():
+    open("output.txt", "w").close()
+    adj_list = read_file('cal.cedge.txt')
+    prims_algorithm(adj_list)
+
+
+if __name__ == '__main__':
+    main()

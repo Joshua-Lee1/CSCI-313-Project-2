@@ -1,6 +1,7 @@
 from queue import PriorityQueue 
 from collections import defaultdict
 import os
+import time
 
 
 """
@@ -146,8 +147,12 @@ def main():
     open("output.txt", "w").close()
     edge_representation = read_file('cal.cedge.txt')
     adj_list = create_adj_list(edge_representation)
-    prims_algorithm(adj_list)
-
+    start_time = time.time()
+    edge_set, edge_sum = prims_algorithm(adj_list)
+    end_time = time.time()
+    duration = end_time - start_time
+    print(f"Prim's Algorithm completed in {duration:.6f} seconds.")
+    print(f"Total MST Cost: {edge_sum}")
 
 if __name__ == '__main__':
     main()

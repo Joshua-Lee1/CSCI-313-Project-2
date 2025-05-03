@@ -14,7 +14,7 @@ def read_file(file_name):
     ## keep edge representation in the form of a list of lists so it is easier for us to process
     edge_representation = []
     ## open the file and process each line
-    with open("cal.cedge.txt", "r") as file:
+    with open(file_name, "r") as file:
         for line in file:
             # skip comments and blank lines
             if line.startswith("#") or not line.strip():
@@ -46,7 +46,7 @@ Returns:
 def write_file(file_name,text):
     # Writing to a file
     try:
-        with open(file_name, "a") as file:
+        with open(file_name, "w") as file:
             file.write(text + "\n")
     except Exception as e:
         print(f"An error occurred: {e}")

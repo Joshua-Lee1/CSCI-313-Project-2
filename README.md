@@ -21,3 +21,7 @@ This project is designed for CSCI-313 to demonstrate understanding of graph algo
 
 - **Kruskal's Algorithm**: Greedy approach using Union-Find to prevent cycles.
 - **Prim's Algorithm**: Greedy approach using a priority queue to grow the MST.
+
+## How to run
+Run the program from the terminal:
+python project_file.py <input_file> <output_file>

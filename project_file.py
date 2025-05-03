@@ -2,7 +2,7 @@ from queue import PriorityQueue
 from collections import defaultdict
 import os
 import time
-
+import sys
 
 class MinHeap:
     def __init__(self):
@@ -209,30 +209,34 @@ def prompt_file_selection():
 
 
 def main():
-    while True:
-        input_file = prompt_file_selection()
-        
-        if input_file is None:
-            print("Exiting program.")
-            break
-            
-        print(f"\nReading from file: {input_file}\n")
-        
-        base_name = input_file.replace(".cedge.txt", "")
-        output_file = f"{base_name}.output.txt"
-        
-        open(output_file, "w").close()
-        
-        edge_representation = read_file(input_file)
-        adj_list = create_adj_list(edge_representation)
-        start_time = time.time()
-        edge_set, edge_sum = prims_algorithm(adj_list, output_file)
-        end_time = time.time()
-        duration = end_time - start_time
-        
-        print(f"Prim's Algorithm completed in {duration:.6f} seconds.")
-        print(f"Total MST Cost: {edge_sum}")
-        print(f"Results saved to {output_file}\n")
+    if len(sys.argv) != 3:
+        print("Usage: python your_script.py <input_file> <output_file>")
+        sys.exit(1)
+
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
+
+    if not os.path.exists(input_file):
+        print(f"Error: Input file '{input_file}' not found.")
+        sys.exit(1)
+
+    print(f"\nReading from file: {input_file}\n")
+    
+    # Clear the output file if it exists
+    open(output_file, "w").close()
+
+    edge_representation = read_file(input_file)
+    adj_list = create_adj_list(edge_representation)
+
+    start_time = time.time()
+    edge_set, edge_sum = prims_algorithm(adj_list, output_file)
+    end_time = time.time()
+    duration = end_time - start_time
+
+    print(f"Prim's Algorithm completed in {duration:.6f} seconds.")
+    print(f"Total MST Cost: {edge_sum}")
+    print(f"Results saved to {output_file}\n")
+
 
 if __name__ == '__main__':
     main()

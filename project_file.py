@@ -13,12 +13,13 @@ Args:
     represented in the form {node: [edge_length, start_node, end_node, edge_id]} 
     edge length is first in the list because when we use priority queue it takes the first value
     in the list to maintain our min heap
+    output file for where the results will be saved
 
 Returns:
     edge_set to represent the edges that we used to minimize the cost
     edje_sum to calculate the total cost of the optimal edge set
 """
-def prims_algorithm(adj_list):
+def prims_algorithm(adj_list, output_file):
     # variables to store our edges and nodes
     edge_set = set()
     visited = set()
@@ -45,7 +46,7 @@ def prims_algorithm(adj_list):
 
         ## process it if it has not been visited yet
         if popped_node[2] not in visited:
-            write_file("output.txt", f"{edge_id} {start_node} {end_node} {edge_length}")
+            write_file(output_file, f"{edge_id} {start_node} {end_node} {edge_length}")
             ## mark as visited
             visited.add(end_node)
             ## add the minimum edge to the edge set
@@ -72,11 +73,11 @@ Returns:
     [edge, start node, end node, edge_id] or [edge, end node, start node, edge_id] to account for an 
     undirected graph.
 """
-def read_file(file_name):
+def read_file(input_file):
     ## keep edge representation in the form of a list of lists so it is easier for us to process
     edge_representation = []
     ## open the file and process each line
-    with open("cal.cedge.txt", "r") as file:
+    with open(input_file, "r") as file:
         for line in file:
             # skip comments and blank lines
             if line.startswith("#") or not line.strip():
@@ -143,16 +144,49 @@ def create_adj_list(edge_representation):
     return adj_list
 
 
+def prompt_file_selection():
+    valid_files = ["NA.cedge.txt", "OL.cedge.txt", "SF.cedge.txt", "TG.cedge.txt", "cal.cedge.txt"]
+    print("\nAvailable files:")
+    for i, file in enumerate(valid_files, 1):
+        print(f"  {i}. {file}")
+    print("  0. Exit")
+
+    while True:
+        user_input = input("\nEnter the number corresponding to the file you'd like to use (0 to exit): ").strip()
+        if user_input.isdigit():
+            index = int(user_input)
+            if index == 0:
+                return None
+            elif 1 <= index <= len(valid_files):
+                return valid_files[index - 1]
+        print("Invalid selection. Please try again with a number from the list.")
+
+
 def main():
-    open("output.txt", "w").close()
-    edge_representation = read_file('cal.cedge.txt')
-    adj_list = create_adj_list(edge_representation)
-    start_time = time.time()
-    edge_set, edge_sum = prims_algorithm(adj_list)
-    end_time = time.time()
-    duration = end_time - start_time
-    print(f"Prim's Algorithm completed in {duration:.6f} seconds.")
-    print(f"Total MST Cost: {edge_sum}")
+    while True:
+        input_file = prompt_file_selection()
+        
+        if input_file is None:
+            print("Exiting program.")
+            break
+            
+        print(f"\nReading from file: {input_file}\n")
+        
+        base_name = input_file.replace(".cedge.txt", "")
+        output_file = f"{base_name}.output.txt"
+        
+        open(output_file, "w").close()
+        
+        edge_representation = read_file(input_file)
+        adj_list = create_adj_list(edge_representation)
+        start_time = time.time()
+        edge_set, edge_sum = prims_algorithm(adj_list, output_file)
+        end_time = time.time()
+        duration = end_time - start_time
+        
+        print(f"Prim's Algorithm completed in {duration:.6f} seconds.")
+        print(f"Total MST Cost: {edge_sum}")
+        print(f"Results saved to {output_file}\n")
 
 if __name__ == '__main__':
     main()

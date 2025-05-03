@@ -23,7 +23,8 @@ def kruskals_algorithm(adj_list, edge_representation,output_file_name):
     #using Kruskal makes it far faster to just send it with the edges as read in
     edge_representation.sort(key=getWeight)
     index = 0
-    while total_verts > 1 and index < total_verts: #MST has V-1 edges
+    edge_count = 0
+    while edge_count < total_verts - 1 and index < len(edge_representation):
         current_edge = edge_representation[index]
         #extract each variable for easier reading
         edge_id = current_edge[0]

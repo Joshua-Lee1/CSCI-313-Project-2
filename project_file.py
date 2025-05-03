@@ -4,6 +4,52 @@ import os
 import time
 
 
+class MinHeap:
+    def __init__(self):
+        self.heap = []
+
+    def push(self, item):
+        self.heap.append(item)
+        self._heapify_up(len(self.heap) - 1)
+
+    def pop(self):
+        if len(self.heap) == 0:
+            raise IndexError("Heap is empty")
+        if len(self.heap) == 1:
+            return self.heap.pop()
+        # Swap root with last and heapify down
+        root = self.heap[0]
+        self.heap[0] = self.heap.pop()
+        self._heapify_down(0)
+        return root
+
+    def is_empty(self):
+        return len(self.heap) == 0
+
+    def _heapify_up(self, index):
+        parent = (index - 1) // 2
+        while index > 0 and self.heap[index][0] < self.heap[parent][0]:
+            self.heap[index], self.heap[parent] = self.heap[parent], self.heap[index]
+            index = parent
+            parent = (index - 1) // 2
+
+    def _heapify_down(self, index):
+        size = len(self.heap)
+        while True:
+            smallest = index
+            left = 2 * index + 1
+            right = 2 * index + 2
+
+            if left < size and self.heap[left][0] < self.heap[smallest][0]:
+                smallest = left
+            if right < size and self.heap[right][0] < self.heap[smallest][0]:
+                smallest = right
+            if smallest == index:
+                break
+            self.heap[index], self.heap[smallest] = self.heap[smallest], self.heap[index]
+            index = smallest
+
+
 """
 Uses Prims algorithm to find the mst of a graph and writes to output file of the nodes
 we traverse in the order of minimum edge weight. 
@@ -27,16 +73,16 @@ def prims_algorithm(adj_list, output_file):
 
     ## initialize our start with the first node and its neighbors
     ## priority queue will contain edges
-    q = PriorityQueue() 
+    q = MinHeap() 
     node, neighbors = next(iter(adj_list.items()))
     for neighbor in neighbors:
-        q.put(neighbor)
+        q.push(neighbor)
     visited.add(node)
 
     ## check every edge
-    while not q.empty():
+    while not q.is_empty():
         # pop a node with the min edge weight off the heap 
-        popped_node = q.get()
+        popped_node = q.pop()
 
         # extract each variable for easier reading
         edge_id = popped_node[3]
@@ -57,7 +103,7 @@ def prims_algorithm(adj_list, output_file):
             ## Check the neighbors of the node we are processing and add its edges to the priority queue
             for neighbor in adj_list[end_node]:
                 if neighbor[2] not in visited:
-                    q.put(neighbor)
+                    q.push(neighbor)
 
     return edge_set, edge_sum
 

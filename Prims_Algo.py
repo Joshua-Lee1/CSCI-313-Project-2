@@ -100,7 +100,7 @@ def prims_algorithm(adj_list,output_file_name):
             ## Check the neighbors of the node we are processing and add its edges to the priority queue
             for neighbor in adj_list[end_node]:
                 if neighbor[2] not in visited:
-                    q.put(neighbor)
+                    q.push(neighbor)
         
     write_file(output_file_name, solution_str)
     return edge_set, edge_sum

@@ -7,34 +7,32 @@ from Helper_Functions import read_file, create_adj_list
 import sys
 
 
-"""
-def prompt_file_selection():
-    valid_files = ["NA.cedge.txt", "OL.cedge.txt", "SF.cedge.txt", "TG.cedge.txt", "cal.cedge.txt"]
-    print("\nAvailable files:")
-    for i, file in enumerate(valid_files, 1):
-        print(f"  {i}. {file}")
-    print("  0. Exit")
+
+def prompt_algorithm_selection():
+    algorithms = ["Prim", "Kruskal"]
+    print("\nSelect algorithm:")
+    for i, algo in enumerate(algorithms, 1):
+        print(f"  {i}. {algo}")
 
     while True:
-        user_input = input("\nEnter the number corresponding to the file you'd like to use (0 to exit): ").strip()
+        user_input = input("\nEnter the number corresponding to the algorithm you'd like to use: ").strip()
         if user_input.isdigit():
             index = int(user_input)
-            if index == 0:
-                return None
-            elif 1 <= index <= len(valid_files):
-                return valid_files[index - 1]
+            if 1 <= index <= len(algorithms):
+                return algorithms[index - 1]
         print("Invalid selection. Please try again with a number from the list.")
-"""
+
+
 
 
 def main():
-    if len(sys.argv) != 4:
-        print("Usage: python your_script.py <algorithm_name> <input_file> <output_file> \n The algorithms are 'Prim' and 'Kruskal' ")
+    if len(sys.argv) != 3:
+        print("Usage: python <your_script.py> <input_file> <output_file> ")
         sys.exit(1)
-    algo = sys.argv[1]
-    input_file = sys.argv[2]
-    output_file = sys.argv[3]
-
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
+    algo = prompt_algorithm_selection()
+    
     if not os.path.exists(input_file):
         print(f"Error: Input file '{input_file}' not found.")
         sys.exit(1)
